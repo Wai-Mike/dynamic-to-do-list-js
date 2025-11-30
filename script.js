@@ -17,23 +17,32 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Add task function
-    function addTask(taskText, save = true) {
-        if (taskText === '' || taskText === undefined || taskText === null) {
+    function addTask(taskTextValue, save = true) {
+        let taskText;
+        
+        // If called from event listener, get value from input
+        if (taskTextValue === undefined || taskTextValue === null) {
+            taskText = taskInput.value.trim();
+        } else {
+            taskText = taskTextValue;
+        }
+        
+        if (taskText === '') {
+            alert('Please enter a task');
             return;
         }
 
         // Create list item element
         const li = document.createElement('li');
         
-        // Create span for the task text
-        const taskTextSpan = document.createElement('span');
-        taskTextSpan.textContent = taskText;
-        li.appendChild(taskTextSpan);
+        // Create text node and set it as textContent
+        const textNode = document.createTextNode(taskText);
+        li.appendChild(textNode);
 
         // Create remove button
         const removeBtn = document.createElement('button');
         removeBtn.textContent = 'Remove';
-        removeBtn.className = 'remove-btn';
+        removeBtn.classList.add('remove-btn');
         removeBtn.onclick = function() {
             // Remove from DOM
             taskList.removeChild(li);
@@ -62,24 +71,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Event listener for Add Task button
-    addButton.addEventListener('click', function() {
-        const taskText = taskInput.value.trim();
-        if (taskText === '') {
-            alert('Please enter a task');
-            return;
-        }
-        addTask(taskText, true);
-    });
+    addButton.addEventListener('click', addTask);
 
     // Event listener for Enter key in input field
     taskInput.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
-            const taskText = taskInput.value.trim();
-            if (taskText === '') {
-                alert('Please enter a task');
-                return;
-            }
-            addTask(taskText, true);
+            addTask();
         }
     });
 
